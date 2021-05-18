@@ -1,0 +1,87 @@
+specVersion: 0.0.2
+
+description: Deterministic art painting Ethereum blocks
+repository: https://github.com/protofire/ethblockart-subgraph
+
+schema:
+  file: ./schema.graphql
+
+dataSources:
+  - name: BlockArtFactory
+    kind: ethereum/contract
+    network: mainnet
+    source:
+      abi: BlockArtFactory
+      address: '0xa6d71f644e0c3e1673bd99f32e84f21827322ae3'
+      startBlock: 11754559
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/factory.ts
+      abis:
+        - name: BlockArtFactory
+          file: ./abis/BlockArtFactory.abi
+        - name: BlockArt
+          file: ./abis/BlockArt.abi
+      entities:
+        - Art
+        - Style
+      eventHandlers:
+        - event: Burn(indexed address,indexed uint256)
+          handler: handleBurnArt
+        - event: ReMint(indexed address,indexed uint256)
+          handler: handleReMintArt
+        - event: StyleFeeCollected(indexed address,uint256,uint256)
+          handler: handleStyleFeeCollected
+        - event: StyleRemoved(indexed uint256)
+          handler: handleStyleRemoved
+
+  - name: BlockArt
+    kind: ethereum/contract
+    network: mainnet
+    source:
+      abi: BlockArt
+      address: '0xb80fbf6cdb49c33dc6ae4ca11af8ac47b0b4c0f3'
+      startBlock: 11598700
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/art.ts
+      abis:
+        - name: BlockArt
+          file: ./abis/BlockArt.abi
+        - name: BlockStyle
+          file: ./abis/BlockStyle.abi
+      entities:
+        - Art
+        - ArtMetadata
+        - BlockPrice
+        - Style
+        - Token
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleArtTransfer
+
+  - name: BlockStyle
+    kind: ethereum/contract
+    network: mainnet
+    source:
+      abi: BlockStyle
+      address: '0x73c8460f8043a4521c889a3cc23d1c81214a1d25'
+      startBlock: 11598689
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/style.ts
+      abis:
+        - name: BlockStyle
+          file: ./abis/BlockStyle.abi
+      entities:
+        - Style
+        - Token
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleStyleTransfer

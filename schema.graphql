@@ -1,0 +1,207 @@
+type Account @entity {
+  id: ID!
+
+  address: Bytes!
+
+  arts: [Art!] @derivedFrom(field: "owner")
+
+  "Styles created by this account"
+  createdStyles: [Style!] @derivedFrom(field: "creator")
+
+  "Styles owned by this account"
+  styles: [Style!] @derivedFrom(field: "owner")
+}
+
+type Balance @entity {
+  id: ID!
+  value: BigDecimal!
+}
+
+type Counter @entity {
+  id: ID!
+  value: BigInt!
+}
+
+type Art @entity {
+  "Equals to: <token_id>"
+  id: ID!
+
+  "Token address"
+  token: Token!
+
+  "Token address"
+  tokenId: BigInt!
+
+  "Style associated to this art"
+  style: Style!
+
+  "Block number associated to this art"
+  blockNumber: BigInt!
+
+  "Creator address"
+  creator: Account!
+
+  createdAt: BigInt
+
+  "Art description"
+  description: String
+
+  externalUrl: String
+
+  image: String
+
+  metadata: ArtMetadata!
+
+  "Art name"
+  name: String
+
+  owner: Account!
+
+  "Value paid to mint this NFT"
+  value: BigDecimal!
+
+  mintedAt: BigInt!
+  mintedAtBlock: BigInt!
+  mintedAtTransaction: Bytes!
+
+  burnedAt: BigInt
+  burnedAtBlock: BigInt
+  burnedAtTransaction: Bytes
+}
+
+type ArtMetadata @entity {
+  id: ID!
+  art: Art!
+  blockNumber: BigInt
+  createdAt: BigInt
+  creatorAddress: Bytes
+  description: String
+  externalUrl: String
+  image: String
+  name: String
+  styleId: BigInt
+  styleName: String
+  styleCreatorName: String
+  attributes: [ArtAttribute!] @derivedFrom(field: "metadata")
+  settings: [ArtSetting!] @derivedFrom(field: "metadata")
+}
+
+type ArtAttribute @entity {
+  id: ID!
+  metadata: ArtMetadata!
+  index: Int!
+  displayType: String
+  maxValue: String
+  traitType: String
+  value: String
+}
+
+type ArtSetting @entity {
+  id: ID!
+  metadata: ArtMetadata!
+  key: String!
+  value: String!
+}
+
+interface ArtEvent @entity {
+  art: Art!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+type ArtMint implements ArtEvent @entity {
+  id: ID!
+  art: Art!
+  creator: Account!
+  fee: BigDecimal!
+  value: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+type ArtReMint implements ArtEvent @entity {
+  id: ID!
+  art: Art!
+  fee: BigDecimal!
+  newMetadata: ArtMetadata!
+  oldMetadata: ArtMetadata!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+type ArtTransfer implements ArtEvent @entity {
+  id: ID!
+  art: Art!
+  from: Account!
+  to: Account!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+type ArtBurn implements ArtEvent @entity {
+  id: ID!
+  art: Art!
+  to: Account!
+  fee: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+type BlockPrice @entity {
+  "Block hash"
+  id: ID!
+
+  "Block number"
+  blockNumber: BigInt!
+
+  "Price set for block"
+  value: BigDecimal!
+
+  "Block timestamp"
+  timestamp: BigInt!
+}
+
+type Style @entity {
+  id: ID!
+
+  token: Token!
+
+  tokenId: BigInt!
+
+  creator: Account!
+
+  creatorName: String
+
+  feeBalance: BigDecimal!
+
+  metadata: String!
+
+  name: String
+
+  owner: Account!
+
+  addedAt: BigInt!
+
+  addedAtBlock: BigInt!
+
+  addedAtTransaction: Bytes!
+
+  removedAt: BigInt
+
+  removedAtBlock: BigInt
+
+  removedAtTransaction: Bytes
+}
+
+type Token @entity {
+  id: ID!
+  address: Bytes!
+  name: String!
+  symbol: String!
+  supply: BigInt!
+}
