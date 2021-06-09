@@ -1,5 +1,6 @@
 {
   "name": "ethblockart-subgraph",
+  "license": "MIT",
   "version": "0.1.0",
   "private": true,
   "author": "Sebastián Galiano <sgaliano@gmail.com>",

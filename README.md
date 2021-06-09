@@ -1,7 +1,16 @@
 # eth.blockArt
+	made with love by protofire.io team for thegraph.com under the MIT license
 
-This subgraph provides handler for the main features of this project
+"Blockchain art you create, deterministically generated from the Ethereum blockchain and your inputs."
 
+> https://ethblock.art/
+
+This subgraph provides an interface for the main features of this project such as the Art, Styles and Accounts. Provinding info about standart transactions, minting, burn. Also metadata for art, styles, art attributes, etc.
+
+This subgraph rely's on following contracts:
+- BlockStyle: 0x73c8460f8043a4521c889a3cc23d1c81214a1d25 
+- BlockArt: 0xb80fbf6cdb49c33dc6ae4ca11af8ac47b0b4c0f3
+- bLockArtFactory: 0xa6d71f644e0c3e1673bd99f32e84f21827322ae3
 ## Art 
 
 	event: Transfer(indexed address,indexed address,indexed uint256)
