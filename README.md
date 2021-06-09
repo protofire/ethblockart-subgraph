@@ -1,5 +1,5 @@
 # eth.blockArt
-	made with love by protofire.io team for thegraph.com under the MIT license
+_Made by Protoire.io under MIT License_
 
 "Blockchain art you create, deterministically generated from the Ethereum blockchain and your inputs."
 
