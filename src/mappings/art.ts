@@ -1,4 +1,4 @@
-import { Address } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal } from '@graphprotocol/graph-ts'
 import { address, decimal, integer } from '@protofire/subgraph-toolkit'
 
 import { BlockArt, Transfer } from '../../generated/BlockArt/BlockArt'
@@ -67,7 +67,7 @@ export function handleArtTransfer(event: Transfer): void {
     // Track mint fee
     let feeMultiplier = decimal.fromBigInt(stylesContract.getStyleFeeMul(style.tokenId))
     let minFee = decimal.fromBigInt(stylesContract.getStyleFeeMin(style.tokenId))
-    let fee = art.value.div(feeMultiplier).times(decimal.ONE_HUNDRED)
+    let fee = art.value.div(feeMultiplier).times(BigDecimal.fromString('100'))
 
     if (fee.lt(minFee)) {
       fee = minFee
