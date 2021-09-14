@@ -1,4 +1,4 @@
-import { Address, JSONValue, JSONValueKind, TypedMap } from '@graphprotocol/graph-ts'
+import { Address, BigInt, JSONValue, JSONValueKind, TypedMap } from '@graphprotocol/graph-ts'
 
 import { ArtAttribute, ArtMetadata, ArtSetting } from '../../generated/schema'
 
@@ -13,15 +13,18 @@ export function getOrCreateArtMetadata(uri: string): ArtMetadata {
     let data = metadataUrl.parse().toObject()
 
     metadata = new ArtMetadata(metadataUrl.toString())
-    metadata.blockNumber = getOrNull(data, 'created_at')!.toBigInt()
-    metadata.createdAt = getOrNull(data, 'created_at')!.toBigInt()
-    metadata.creatorAddress = Address.fromString(getOrNull(data, 'creator_addr')!.toString())
-    metadata.description = getOrNull(data, 'description')!.toString()
-    metadata.externalUrl = getOrNull(data, 'external_url')!.toString()
-    metadata.name = getOrNull(data, 'name')!.toString()
-    metadata.styleId = getOrNull(data, 'style_id')!.toBigInt()
-    metadata.styleName = getOrNull(data, 'style_name')!.toString()
-    metadata.styleCreatorName = getOrNull(data, 'style_creator_name')!.toString()
+
+    metadata.blockNumber = safeToBigInt(getOrNull(data, 'created_at'))
+    metadata.blockNumber = safeToBigInt(getOrNull(data, 'created_at'))
+    metadata.createdAt = safeToBigInt(getOrNull(data, 'created_at'))
+    metadata.styleId = safeToBigInt(getOrNull(data, 'style_id'))
+
+    metadata.creatorAddress = Address.fromString(safeToString(getOrNull(data, 'creator_addr')))
+    metadata.description = safeToString(getOrNull(data, 'description'))
+    metadata.externalUrl = safeToString(getOrNull(data, 'external_url'))
+    metadata.name = safeToString(getOrNull(data, 'name'))
+    metadata.styleName = safeToString(getOrNull(data, 'style_name'))
+    metadata.styleCreatorName = safeToString(getOrNull(data, 'style_creator_name'))
 
     if (metadata.isSet('image')) {
       let image = getOrNull(data, 'image')!.toString()
@@ -108,5 +111,18 @@ function getOrNull(obj: TypedMap<string, JSONValue>, key: string): JSONValue | n
     }
   }
 
+  return null
+}
+
+function safeToBigInt(val: JSONValue | null): BigInt | null {
+  if (val.kind == JSONValueKind.NUMBER) {
+    return val.toBigInt()
+  }
+  return null
+}
+function safeToString(val: JSONValue | null): string | null {
+  if (val.kind == JSONValueKind.STRING) {
+    return val.toString()
+  }
   return null
 }
